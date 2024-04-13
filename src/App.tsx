@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BarGlob3d, Glob3d } from 'glob3d';
+import { useEffect, useRef } from 'react';
+
+import './App.css';
+
+import { getCitiesData } from './citiesData';
+
+// const root = document.querySelector('#root');
+// const updateButton = document.querySelector('.update-button');
+// if (!root || !(root instanceof HTMLElement)) {
+//   throw new Error('Root element not found');
+// }
+
+// updateButton &&
+//   updateButton.addEventListener('click', async () => {
+//     globeInstance.clean();
+//     globeInstance.update(data);
+//   });
 
 function App() {
-  const [count, setCount] = useState(0)
+  const appRef = useRef();
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  const data = getCitiesData();
+
+  useEffect(() => {
+    if (appRef.current.children.length === 0) {
+      const globeInstance = new BarGlob3d(appRef.current, {
+        debugMode: false,
+      });
+      globeInstance.initialize(data);
+    }
+  }, []);
+
+  return <div ref={appRef}></div>;
 }
 
-export default App
+export default App;
