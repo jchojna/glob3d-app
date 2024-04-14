@@ -3,7 +3,7 @@ import { BarGlob3d } from 'glob3d';
 import { useEffect, useRef, useState } from 'react';
 
 import './App.css';
-import { getCitiesData } from './citiesData';
+import { getCitiesData } from './utils/citiesData';
 
 function App() {
   const appRef = useRef<HTMLDivElement | null>(null);
@@ -24,7 +24,7 @@ function App() {
 
   return (
     <>
-      <div ref={appRef} style={{ width: '1200px', height: '800px' }}></div>
+      <div ref={appRef} className="glob3d"></div>
       <button
         onClick={() => globeInstance.update(data)}
         className="update-button"

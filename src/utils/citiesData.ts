@@ -1,4 +1,4 @@
-import cities from './data/cities100.json';
+import cities from '../data/cities100.json';
 
 export const getCitiesData = () => {
   const { results } = cities;
