@@ -1,4 +1,5 @@
-import { BarGlob3d, Glob3d } from 'glob3d';
+// @ts-expect-error ignore missing glob3d types
+import { BarGlob3d } from 'glob3d';
 import { useEffect, useRef } from 'react';
 
 import './App.css';
@@ -18,20 +19,22 @@ import { getCitiesData } from './citiesData';
 //   });
 
 function App() {
-  const appRef = useRef();
+  const appRef = useRef<HTMLDivElement | null>(null);
 
   const data = getCitiesData();
 
   useEffect(() => {
+    if (!appRef.current) return;
     if (appRef.current.children.length === 0) {
       const globeInstance = new BarGlob3d(appRef.current, {
         debugMode: false,
+        tooltipValueSuffix: 'people',
       });
       globeInstance.initialize(data);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return <div ref={appRef}></div>;
+  return <div ref={appRef} style={{ width: '1200px', height: '800px' }}></div>;
 }
 
 export default App;
