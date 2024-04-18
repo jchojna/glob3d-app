@@ -15,7 +15,6 @@ function App() {
     if (appRef.current.children.length === 0) {
       setGlobeInstance(
         new BarGlob3d(appRef.current, data, {
-          debugMode: false,
           tooltipValueSuffix: 'people',
         })
       );
