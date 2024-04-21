@@ -16,6 +16,10 @@ function App() {
       setGlobeInstance(
         new BarGlob3d(appRef.current, data, {
           tooltipValueSuffix: 'people',
+          globeColor: '#120e36',
+          barColor: '#b4afe8',
+          barActiveColor: '#e5a110',
+          tooltipActiveBackgroundColor: '#e5a110',
         })
       );
     }
