@@ -1,5 +1,6 @@
 import { LeftOutlined, MenuOutlined } from '@ant-design/icons';
-import { Button, Drawer, Flex, Select } from 'antd';
+import type { CollapseProps } from 'antd';
+import { Button, Collapse, Drawer, Flex, Select } from 'antd';
 import { useState } from 'react';
 
 import { endpoints } from '../constants/endpoints';
@@ -12,6 +13,30 @@ type SidebarProps = {
 
 function Sidebar({ dataset, setDataset }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const collapseItems: CollapseProps['items'] = [
+    {
+      key: '1',
+      label: 'Datasets',
+      children: (
+        <Flex gap="middle" vertical>
+          <Select
+            defaultValue={dataset}
+            onChange={(value) => setDataset(value)}
+            options={Object.entries(endpoints).map(([value, label]) => ({
+              value,
+              label: label.label,
+            }))}
+          />
+        </Flex>
+      ),
+    },
+    {
+      key: '2',
+      label: 'Globe Settings',
+      children: <p>Placeholder</p>,
+    },
+  ];
 
   return (
     <>
@@ -30,16 +55,11 @@ function Sidebar({ dataset, setDataset }: SidebarProps) {
         placement="left"
         width={300}
       >
-        <Flex gap="middle" vertical>
-          <Select
-            defaultValue={dataset}
-            onChange={(value) => setDataset(value)}
-            options={Object.entries(endpoints).map(([value, label]) => ({
-              value,
-              label: label.label,
-            }))}
-          />
-        </Flex>
+        <Collapse
+          items={collapseItems}
+          defaultActiveKey={['1']}
+          bordered={false}
+        />
       </Drawer>
     </>
   );
