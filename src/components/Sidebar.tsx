@@ -2,6 +2,7 @@ import { LeftOutlined, MenuOutlined } from '@ant-design/icons';
 import { Button, Drawer, Flex, Select } from 'antd';
 import { useState } from 'react';
 
+import { endpoints } from '../constants/endpoints';
 import classes from './Sidebar.module.css';
 
 type SidebarProps = {
@@ -32,12 +33,11 @@ function Sidebar({ dataset, setDataset }: SidebarProps) {
         <Flex gap="middle" vertical>
           <Select
             defaultValue={dataset}
-            style={{ width: 120 }}
             onChange={(value) => setDataset(value)}
-            options={[
-              { value: 'cities', label: 'Cities' },
-              { value: 'lessCities', label: 'Less Cities' },
-            ]}
+            options={Object.entries(endpoints).map(([value, label]) => ({
+              value,
+              label: label.label,
+            }))}
           />
         </Flex>
       </Drawer>

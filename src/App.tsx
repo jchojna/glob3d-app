@@ -16,7 +16,7 @@ function App() {
   const { data, error, isPending } = useQuery({
     queryKey: ['dataset', dataset],
     queryFn: async () => {
-      const response = await fetch(endpoints[dataset]);
+      const response = await fetch(endpoints[dataset].url);
       console.info('data fetched');
       return response.json();
     },
