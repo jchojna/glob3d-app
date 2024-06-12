@@ -4,6 +4,7 @@ import { BarGlob3d } from 'glob3d';
 import { useEffect, useRef, useState } from 'react';
 
 import './App.css';
+import Sidebar from './components/Sidebar';
 import { prepareCitiesData } from './utils/citiesData';
 
 function App() {
@@ -47,15 +48,16 @@ function App() {
   const preparedData = prepareCitiesData(data.results);
 
   return (
-    <>
-      <div ref={appRef} className="glob3d"></div>
-      <button
-        onClick={() => globeInstance.update(preparedData)}
-        className="update-button"
-      >
-        Update
-      </button>
-    </>
+    <div style={{ minHeight: '100vh' }}>
+      <Sidebar globe={globeInstance} preparedData={preparedData} />
+      <div
+        ref={appRef}
+        style={{
+          height: '100vh',
+          width: '100%',
+        }}
+      ></div>
+    </div>
   );
 }
 
