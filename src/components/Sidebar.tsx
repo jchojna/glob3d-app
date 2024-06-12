@@ -1,11 +1,16 @@
 import { LeftOutlined, MenuOutlined } from '@ant-design/icons';
-import { Button, Drawer } from 'antd';
+import { Button, Drawer, Flex, Select } from 'antd';
 import { useState } from 'react';
 
 import classes from './Sidebar.module.css';
 
-function Sidebar({ globe, preparedData }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+type SidebarProps = {
+  dataset: string;
+  setDataset: (value: string) => void;
+};
+
+function Sidebar({ dataset, setDataset }: SidebarProps) {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <>
@@ -16,20 +21,25 @@ function Sidebar({ globe, preparedData }) {
         <MenuOutlined />
       </Button>
       <Drawer
-        title="Sidebar"
+        title="Settings"
         onClose={() => setSidebarOpen(false)}
         open={sidebarOpen}
         closeIcon={<LeftOutlined />}
-        mask={true}
+        mask={false}
         placement="left"
+        width={300}
       >
-        <Button
-          onClick={() => globe.update(preparedData)}
-          className="update-button"
-          type="primary"
-        >
-          Update
-        </Button>
+        <Flex gap="middle" vertical>
+          <Select
+            defaultValue={dataset}
+            style={{ width: 120 }}
+            onChange={(value) => setDataset(value)}
+            options={[
+              { value: 'cities', label: 'Cities' },
+              { value: 'lessCities', label: 'Less Cities' },
+            ]}
+          />
+        </Flex>
       </Drawer>
     </>
   );

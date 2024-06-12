@@ -5,18 +5,19 @@ import { useEffect, useRef, useState } from 'react';
 
 import './App.css';
 import Sidebar from './components/Sidebar';
+import { endpoints } from './constants/endpoints';
 import { prepareCitiesData } from './utils/citiesData';
 
 function App() {
   const appRef = useRef<HTMLDivElement | null>(null);
   const [globeInstance, setGlobeInstance] = useState<BarGlob3d | null>(null);
+  const [dataset, setDataset] = useState<string>('cities');
 
   const { data, error, isPending } = useQuery({
-    queryKey: [],
+    queryKey: ['dataset', dataset],
     queryFn: async () => {
-      const response = await fetch(
-        'https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/geonames-all-cities-with-a-population-500/records?order_by=population DESC&limit=100'
-      );
+      const response = await fetch(endpoints[dataset]);
+      console.info('data fetched');
       return response.json();
     },
   });
@@ -39,6 +40,12 @@ function App() {
     }
   }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (globeInstance && data) {
+      globeInstance.update(prepareCitiesData(data.results));
+    }
+  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (isPending) return <div>Loading...</div>;
 
   if (error) {
@@ -49,7 +56,7 @@ function App() {
 
   return (
     <div style={{ minHeight: '100vh' }}>
-      <Sidebar globe={globeInstance} preparedData={preparedData} />
+      <Sidebar dataset={dataset} setDataset={setDataset} />
       <div
         ref={appRef}
         style={{
