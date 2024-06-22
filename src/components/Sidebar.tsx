@@ -18,6 +18,8 @@ type SidebarProps = {
   processedData: GlobeData[] | null;
   dataset: string;
   setDataset: (value: string) => void;
+  queryLimit: number;
+  setQueryLimit: (value: number) => void;
 };
 
 const { Text } = Typography;
@@ -37,7 +39,13 @@ function WithLabel({
   );
 }
 
-function Sidebar({ processedData, dataset, setDataset }: SidebarProps) {
+function Sidebar({
+  processedData,
+  dataset,
+  setDataset,
+  queryLimit,
+  setQueryLimit,
+}: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const countries: string[] = useMemo(() => {
@@ -64,8 +72,13 @@ function Sidebar({ processedData, dataset, setDataset }: SidebarProps) {
               }))}
             />
           </WithLabel>
-          <WithLabel label="Results limit">
-            <Slider defaultValue={30} min={10} max={10000} step={10} />
+          <WithLabel label={`Results limit [${queryLimit}]`}>
+            <Slider
+              defaultValue={queryLimit}
+              min={0}
+              max={100}
+              onChangeComplete={(value) => setQueryLimit(value)}
+            />
           </WithLabel>
           {/* <WithLabel label="Filter countries">
             <Select

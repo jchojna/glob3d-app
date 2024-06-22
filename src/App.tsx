@@ -6,17 +6,20 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import Globe from './components/Globe';
 import Sidebar from './components/Sidebar';
-import { endpoints } from './constants/endpoints';
+import { addQueryLimit, endpoints } from './constants/endpoints';
 import { prepareCitiesData } from './utils/citiesData';
 
 function App() {
   const [globeInstance, setGlobeInstance] = useState<BarGlob3d | null>(null);
-  const [dataset, setDataset] = useState<string>('cities');
+  const [dataset, setDataset] = useState('cities');
+  const [queryLimit, setQueryLimit] = useState<number>(100);
 
   const { data, error } = useQuery({
-    queryKey: ['dataset', dataset],
+    queryKey: ['dataset', dataset, queryLimit],
     queryFn: async () => {
-      const response = await fetch(endpoints[dataset].url);
+      const response = await fetch(
+        addQueryLimit(endpoints[dataset].url, queryLimit)
+      );
       return response.json();
     },
   });
@@ -25,7 +28,7 @@ function App() {
     if (globeInstance) {
       globeInstance.onLoading();
     }
-  }, [dataset]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dataset, queryLimit]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (globeInstance && data) {
@@ -33,7 +36,7 @@ function App() {
         globeInstance.onUpdate(prepareCitiesData(data.results));
       }, 300);
     }
-  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [data, queryLimit]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (error) {
     globeInstance.onError();
@@ -45,6 +48,8 @@ function App() {
         processedData={data && prepareCitiesData(data.results)}
         dataset={dataset}
         setDataset={setDataset}
+        queryLimit={queryLimit}
+        setQueryLimit={setQueryLimit}
       />
       <Globe setGlobeInstance={setGlobeInstance} />
     </div>
