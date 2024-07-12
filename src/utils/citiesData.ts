@@ -1,5 +1,5 @@
 type CityData = {
-  country: string;
+  cou_name_en: string;
   population: number;
   coordinates: {
     lon: number;
@@ -9,10 +9,12 @@ type CityData = {
 };
 
 export const prepareCitiesData = (data: CityData[]) => {
-  return data.map(({ country, population, coordinates, name }: CityData) => ({
-    city: name,
-    country,
-    coordinates,
-    value: population,
-  }));
+  return data.map(
+    ({ cou_name_en, population, coordinates, name }: CityData) => ({
+      city: name,
+      country: cou_name_en,
+      coordinates,
+      value: population,
+    })
+  );
 };

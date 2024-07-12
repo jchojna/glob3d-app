@@ -1,60 +1,32 @@
 import { LeftOutlined, MenuOutlined } from '@ant-design/icons';
 import type { CollapseProps } from 'antd';
-import {
-  Button,
-  Collapse,
-  Drawer,
-  Flex,
-  Select,
-  Slider,
-  Typography,
-} from 'antd';
-import { useMemo, useState } from 'react';
+import { Button, Collapse, Drawer, Flex, Select, Slider } from 'antd';
+import { useState } from 'react';
 
 import { endpoints } from '../constants/endpoints';
 import classes from './Sidebar.module.css';
+import { WithLabel } from './WithLabel';
 
 type SidebarProps = {
-  processedData: GlobeData[] | null;
   dataset: string;
   setDataset: (value: string) => void;
   queryLimit: number;
   setQueryLimit: (value: number) => void;
+  allCountries: string[];
+  selectedCountries: string[];
+  setSelectedCountries: (value: string[]) => void;
 };
 
-const { Text } = Typography;
-
-function WithLabel({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Flex vertical>
-      <Text>{label}</Text>
-      {children}
-    </Flex>
-  );
-}
-
 function Sidebar({
-  processedData,
   dataset,
   setDataset,
   queryLimit,
   setQueryLimit,
+  allCountries,
+  selectedCountries,
+  setSelectedCountries,
 }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  const countries: string[] = useMemo(() => {
-    if (!processedData) return [];
-    const countries = new Set<string>();
-    processedData.forEach((city: GlobeData) => countries.add(city.country));
-    return Array.from(countries);
-  }, [processedData]);
-  console.log(countries);
 
   const collapseItems: CollapseProps['items'] = [
     {
@@ -80,16 +52,19 @@ function Sidebar({
               onChangeComplete={(value) => setQueryLimit(value)}
             />
           </WithLabel>
-          {/* <WithLabel label="Filter countries">
+          <WithLabel label="Filter countries">
             <Select
-              // defaultValue={dataset}
-              // onChange={(value) => setDataset(value)}
-              options={Object.entries(endpoints).map(([value, label]) => ({
-                value,
-                label: label.label,
+              mode="multiple"
+              maxTagCount={1}
+              value={selectedCountries}
+              onChange={(value) => setSelectedCountries(value)}
+              placeholder="All countries"
+              options={allCountries.map((country) => ({
+                label: country,
+                value: country,
               }))}
             />
-          </WithLabel> */}
+          </WithLabel>
         </Flex>
       ),
     },
