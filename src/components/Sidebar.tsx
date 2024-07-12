@@ -1,7 +1,15 @@
 import { LeftOutlined, MenuOutlined } from '@ant-design/icons';
 import type { CollapseProps } from 'antd';
-import { Button, Collapse, Drawer, Flex, Select, Slider } from 'antd';
-import { useState } from 'react';
+import {
+  Button,
+  Collapse,
+  ColorPicker,
+  Drawer,
+  Flex,
+  Select,
+  Slider,
+} from 'antd';
+import { useEffect, useState } from 'react';
 
 import { endpoints } from '../constants/endpoints';
 import classes from './Sidebar.module.css';
@@ -27,6 +35,11 @@ function Sidebar({
   setSelectedCountries,
 }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [backgroundColor, setBackgroundColor] = useState('#211f3e');
+
+  useEffect(() => {
+    document.body.style.backgroundColor = backgroundColor;
+  }, [backgroundColor]);
 
   const collapseItems: CollapseProps['items'] = [
     {
@@ -71,7 +84,15 @@ function Sidebar({
     {
       key: '2',
       label: 'Globe Settings',
-      children: <p>Placeholder</p>,
+      children: (
+        <Flex gap="middle" vertical>
+          <ColorPicker
+            defaultValue={backgroundColor}
+            onChange={(color) => setBackgroundColor(color.toHexString())}
+            showText={() => 'Background color'}
+          />
+        </Flex>
+      ),
     },
   ];
 

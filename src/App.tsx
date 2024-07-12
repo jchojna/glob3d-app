@@ -49,7 +49,9 @@ function App() {
 
   useEffect(() => {
     if (data) {
-      const allCountries = getCountriesArray(prepareCitiesData(data.results));
+      const allCountries = getCountriesArray(
+        prepareCitiesData(data.results)
+      ).sort();
       setAllCountries(allCountries);
     }
   }, [data]);
