@@ -18,3 +18,9 @@ export const prepareCitiesData = (data: CityData[]) => {
     })
   );
 };
+
+export const getCountriesArray = (data: GlobeData[]) => {
+  const countriesSet = new Set<string>();
+  data.forEach((d: GlobeData) => countriesSet.add(d.country));
+  return [...countriesSet];
+};

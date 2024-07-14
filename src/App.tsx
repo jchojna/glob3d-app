@@ -7,13 +7,7 @@ import './App.css';
 import Globe from './components/Globe';
 import Sidebar from './components/Sidebar';
 import { addQueryLimit, endpoints } from './constants/endpoints';
-import { prepareCitiesData } from './utils/citiesData';
-
-const getCountriesArray = (data: GlobeData[]) => {
-  const countriesSet = new Set<string>();
-  data.forEach((d: GlobeData) => countriesSet.add(d.country));
-  return [...countriesSet];
-};
+import { getCountriesArray, prepareCitiesData } from './utils/citiesData';
 
 function App() {
   const [globeInstance, setGlobeInstance] = useState<BarGlob3d | null>(null);
@@ -37,7 +31,7 @@ function App() {
   }
 
   if (error) {
-    globeInstance.onError();
+    globeInstance && globeInstance.onError();
   }
 
   if (data) {

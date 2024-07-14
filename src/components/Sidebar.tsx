@@ -85,11 +85,13 @@ function Sidebar({
       key: '2',
       label: 'Globe Settings',
       children: (
-        <Flex gap="middle" vertical>
+        <Flex gap="middle" vertical align="flex-start">
           <ColorPicker
             defaultValue={backgroundColor}
-            onChange={(color) => setBackgroundColor(color.toHexString())}
-            showText={() => 'Background color'}
+            onChangeComplete={(color) =>
+              setBackgroundColor(color.toHexString())
+            }
+            showText={() => 'Theme color'}
           />
         </Flex>
       ),
