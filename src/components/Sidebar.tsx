@@ -4,6 +4,7 @@ import {
   Button,
   Collapse,
   ColorPicker,
+  ConfigProvider,
   Drawer,
   Flex,
   Select,
@@ -99,7 +100,17 @@ function Sidebar({
   ];
 
   return (
-    <>
+    <ConfigProvider
+      theme={{
+        components: {
+          Collapse: {
+            contentPadding: 30,
+            headerPadding: 20,
+          },
+        },
+        token: {},
+      }}
+    >
       <Button
         onClick={() => setSidebarOpen(true)}
         className={classes.sidebarButton}
@@ -114,6 +125,7 @@ function Sidebar({
         mask={false}
         placement="left"
         width={300}
+        styles={{ body: { padding: 0 } }}
       >
         <Collapse
           items={collapseItems}
@@ -121,7 +133,7 @@ function Sidebar({
           bordered={false}
         />
       </Drawer>
-    </>
+    </ConfigProvider>
   );
 }
 
