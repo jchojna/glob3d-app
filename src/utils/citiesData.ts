@@ -1,12 +1,5 @@
-import cities from '../data/cities100.json';
-
-export const getCitiesData = () => {
-  const { results } = cities;
-  return prepareCitiesData(results);
-};
-
 type CityData = {
-  country: string;
+  cou_name_en: string;
   population: number;
   coordinates: {
     lon: number;
@@ -15,11 +8,19 @@ type CityData = {
   name: string;
 };
 
-const prepareCitiesData = (data: CityData[]) => {
-  return data.map(({ country, population, coordinates, name }: CityData) => ({
-    city: name,
-    country,
-    coordinates,
-    value: population,
-  }));
+export const prepareCitiesData = (data: CityData[]) => {
+  return data.map(
+    ({ cou_name_en, population, coordinates, name }: CityData) => ({
+      city: name,
+      country: cou_name_en,
+      coordinates,
+      value: population,
+    })
+  );
+};
+
+export const getCountriesArray = (data: GlobeData[]) => {
+  const countriesSet = new Set<string>();
+  data.forEach((d: GlobeData) => countriesSet.add(d.country));
+  return [...countriesSet];
 };

@@ -3,7 +3,6 @@
 }
 
 body {
-  background-color: #211f3e;
   font-family: 'Open Sans', sans-serif;
   height: 100vh;
   overflow: hidden;
@@ -18,19 +17,9 @@ body {
       height: 100%;
       width: 100%;
     }
-
-    .update-button {
-      background: #fff;
-      border-radius: 8px;
-      color: #211f3e;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: bold;
-      left: 50px;
-      padding: 10px 20px;
-      position: absolute;
-      top: 50px;
-      z-index: 999;
-    }
   }
+}
+
+.ant-collapse {
+  flex-direction: column;
 }
