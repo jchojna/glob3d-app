@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import Color from 'color';
 // @ts-expect-error ignore missing glob3d types
 import { BarGlob3d } from 'glob3d';
 import { useEffect, useState } from 'react';
@@ -15,6 +16,7 @@ function App() {
   const [queryLimit, setQueryLimit] = useState<number>(100);
   const [allCountries, setAllCountries] = useState<string[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [globeColor, setGlobeColor] = useState('#211f3e');
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['dataset', dataset, queryLimit],
@@ -50,6 +52,13 @@ function App() {
     }
   }, [data]);
 
+  useEffect(() => {
+    document.body.style.backgroundColor = globeColor;
+    if (globeInstance) {
+      globeInstance.setGlobeColor(Color(globeColor).darken(0.15).hex());
+    }
+  }, [globeColor]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div style={{ minHeight: '100vh' }}>
       <Sidebar
@@ -60,6 +69,8 @@ function App() {
         allCountries={allCountries}
         selectedCountries={selectedCountries}
         setSelectedCountries={setSelectedCountries}
+        globeColor={globeColor}
+        setGlobeColor={setGlobeColor}
       />
       <Globe setGlobeInstance={setGlobeInstance} />
     </div>

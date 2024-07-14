@@ -10,7 +10,7 @@ import {
   Select,
   Slider,
 } from 'antd';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { endpoints } from '../constants/endpoints';
 import classes from './Sidebar.module.css';
@@ -24,6 +24,8 @@ type SidebarProps = {
   allCountries: string[];
   selectedCountries: string[];
   setSelectedCountries: (value: string[]) => void;
+  globeColor: string;
+  setGlobeColor: (color: string) => void;
 };
 
 function Sidebar({
@@ -34,13 +36,10 @@ function Sidebar({
   allCountries,
   selectedCountries,
   setSelectedCountries,
+  globeColor,
+  setGlobeColor,
 }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [backgroundColor, setBackgroundColor] = useState('#211f3e');
-
-  useEffect(() => {
-    document.body.style.backgroundColor = backgroundColor;
-  }, [backgroundColor]);
 
   const collapseItems: CollapseProps['items'] = [
     {
@@ -88,10 +87,8 @@ function Sidebar({
       children: (
         <Flex gap="middle" vertical align="flex-start">
           <ColorPicker
-            defaultValue={backgroundColor}
-            onChangeComplete={(color) =>
-              setBackgroundColor(color.toHexString())
-            }
+            defaultValue={globeColor}
+            onChangeComplete={(color) => setGlobeColor(color.toHexString())}
             showText={() => 'Theme color'}
           />
         </Flex>
