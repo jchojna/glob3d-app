@@ -17,8 +17,9 @@ function App() {
   const [queryLimit, setQueryLimit] = useState<number>(100);
   const [allCountries, setAllCountries] = useState<string[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
-  const [colorPrimary, setColorPrimary] = useState('#e5a110');
-  const [colorBg, setColorBg] = useState('#211f3e');
+  const [colorPrimary, setColorPrimary] = useState('#DD176D');
+  const [colorBg, setColorBg] = useState('#201A7E');
+  const [globeOpacity, setGlobeOpacity] = useState(0.85);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['dataset', dataset, queryLimit],
@@ -29,21 +30,6 @@ function App() {
       return response.json();
     },
   });
-
-  if (isLoading) {
-    globeInstance && globeInstance.onLoading();
-  }
-
-  if (error) {
-    globeInstance && globeInstance.onError();
-  }
-
-  if (data) {
-    const results = prepareCitiesData(data.results).filter((d) =>
-      selectedCountries.length > 0 ? selectedCountries.includes(d.country) : d
-    );
-    globeInstance.onUpdate(results);
-  }
 
   useEffect(() => {
     if (data) {
@@ -61,11 +47,32 @@ function App() {
   }, [colorPrimary]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    document.body.style.backgroundColor = colorBg;
+    document.body.style.backgroundColor = Color(colorBg).lighten(0.15).hex();
     if (globeInstance) {
-      globeInstance.setGlobeColor(Color(colorBg).darken(0.15).hex());
+      globeInstance.setGlobeColor(colorBg);
     }
   }, [colorBg]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (globeInstance) {
+      globeInstance.setGlobeOpacity(globeOpacity);
+    }
+  }, [globeOpacity]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (isLoading) {
+    globeInstance && globeInstance.onLoading();
+  }
+
+  if (error) {
+    globeInstance && globeInstance.onError();
+  }
+
+  if (data) {
+    const results = prepareCitiesData(data.results).filter((d) =>
+      selectedCountries.length > 0 ? selectedCountries.includes(d.country) : d
+    );
+    globeInstance.onUpdate(results);
+  }
 
   return (
     <ConfigProvider
@@ -95,8 +102,15 @@ function App() {
           setColorBg={setColorBg}
           colorPrimary={colorPrimary}
           setColorPrimary={setColorPrimary}
+          globeOpacity={globeOpacity}
+          setGlobeOpacity={setGlobeOpacity}
         />
-        <Globe setGlobeInstance={setGlobeInstance} />
+        <Globe
+          setGlobeInstance={setGlobeInstance}
+          colorPrimary={colorPrimary}
+          colorBg={colorBg}
+          globeOpacity={globeOpacity}
+        />
       </div>
     </ConfigProvider>
   );

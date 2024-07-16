@@ -27,6 +27,8 @@ type SidebarProps = {
   setColorBg: (color: string) => void;
   colorPrimary: string;
   setColorPrimary: (color: string) => void;
+  globeOpacity: number;
+  setGlobeOpacity: (opacity: number) => void;
 };
 
 function Sidebar({
@@ -41,6 +43,8 @@ function Sidebar({
   setColorBg,
   colorPrimary,
   setColorPrimary,
+  globeOpacity,
+  setGlobeOpacity,
 }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -88,7 +92,7 @@ function Sidebar({
       key: '2',
       label: 'Globe Settings',
       children: (
-        <Flex gap="middle" vertical align="flex-start">
+        <Flex gap="middle" vertical>
           <ColorPicker
             defaultValue={colorPrimary}
             onChangeComplete={(color) => setColorPrimary(color.toHexString())}
@@ -99,6 +103,15 @@ function Sidebar({
             onChangeComplete={(color) => setColorBg(color.toHexString())}
             showText={() => 'Background color'}
           />
+          <WithLabel label="Globe opacity">
+            <Slider
+              defaultValue={globeOpacity}
+              min={0}
+              max={1}
+              step={0.05}
+              onChangeComplete={(value) => setGlobeOpacity(value)}
+            />
+          </WithLabel>
         </Flex>
       ),
     },
