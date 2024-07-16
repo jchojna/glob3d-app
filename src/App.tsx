@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { ConfigProvider } from 'antd';
 import Color from 'color';
 // @ts-expect-error ignore missing glob3d types
 import { BarGlob3d } from 'glob3d';
@@ -16,7 +17,8 @@ function App() {
   const [queryLimit, setQueryLimit] = useState<number>(100);
   const [allCountries, setAllCountries] = useState<string[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
-  const [globeColor, setGlobeColor] = useState('#211f3e');
+  const [colorPrimary, setColorPrimary] = useState('#e5a110');
+  const [colorBg, setColorBg] = useState('#211f3e');
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['dataset', dataset, queryLimit],
@@ -53,27 +55,50 @@ function App() {
   }, [data]);
 
   useEffect(() => {
-    document.body.style.backgroundColor = globeColor;
     if (globeInstance) {
-      globeInstance.setGlobeColor(Color(globeColor).darken(0.15).hex());
+      globeInstance.setActiveColor(colorPrimary);
     }
-  }, [globeColor]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [colorPrimary]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    document.body.style.backgroundColor = colorBg;
+    if (globeInstance) {
+      globeInstance.setGlobeColor(Color(colorBg).darken(0.15).hex());
+    }
+  }, [colorBg]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div style={{ minHeight: '100vh' }}>
-      <Sidebar
-        dataset={dataset}
-        setDataset={setDataset}
-        queryLimit={queryLimit}
-        setQueryLimit={setQueryLimit}
-        allCountries={allCountries}
-        selectedCountries={selectedCountries}
-        setSelectedCountries={setSelectedCountries}
-        globeColor={globeColor}
-        setGlobeColor={setGlobeColor}
-      />
-      <Globe setGlobeInstance={setGlobeInstance} />
-    </div>
+    <ConfigProvider
+      theme={{
+        components: {
+          Collapse: {
+            contentPadding: 30,
+            headerPadding: 20,
+          },
+        },
+        token: {
+          colorPrimary: colorPrimary,
+          colorBgBase: Color(colorBg).lighten(0.15).hex(),
+        },
+      }}
+    >
+      <div style={{ minHeight: '100vh' }}>
+        <Sidebar
+          dataset={dataset}
+          setDataset={setDataset}
+          queryLimit={queryLimit}
+          setQueryLimit={setQueryLimit}
+          allCountries={allCountries}
+          selectedCountries={selectedCountries}
+          setSelectedCountries={setSelectedCountries}
+          colorBg={colorBg}
+          setColorBg={setColorBg}
+          colorPrimary={colorPrimary}
+          setColorPrimary={setColorPrimary}
+        />
+        <Globe setGlobeInstance={setGlobeInstance} />
+      </div>
+    </ConfigProvider>
   );
 }
 

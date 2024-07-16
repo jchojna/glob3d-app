@@ -4,7 +4,6 @@ import {
   Button,
   Collapse,
   ColorPicker,
-  ConfigProvider,
   Drawer,
   Flex,
   Select,
@@ -24,8 +23,10 @@ type SidebarProps = {
   allCountries: string[];
   selectedCountries: string[];
   setSelectedCountries: (value: string[]) => void;
-  globeColor: string;
-  setGlobeColor: (color: string) => void;
+  colorBg: string;
+  setColorBg: (color: string) => void;
+  colorPrimary: string;
+  setColorPrimary: (color: string) => void;
 };
 
 function Sidebar({
@@ -36,8 +37,10 @@ function Sidebar({
   allCountries,
   selectedCountries,
   setSelectedCountries,
-  globeColor,
-  setGlobeColor,
+  colorBg,
+  setColorBg,
+  colorPrimary,
+  setColorPrimary,
 }: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -87,9 +90,14 @@ function Sidebar({
       children: (
         <Flex gap="middle" vertical align="flex-start">
           <ColorPicker
-            defaultValue={globeColor}
-            onChangeComplete={(color) => setGlobeColor(color.toHexString())}
-            showText={() => 'Theme color'}
+            defaultValue={colorPrimary}
+            onChangeComplete={(color) => setColorPrimary(color.toHexString())}
+            showText={() => 'Primary color'}
+          />
+          <ColorPicker
+            defaultValue={colorBg}
+            onChangeComplete={(color) => setColorBg(color.toHexString())}
+            showText={() => 'Background color'}
           />
         </Flex>
       ),
@@ -97,17 +105,7 @@ function Sidebar({
   ];
 
   return (
-    <ConfigProvider
-      theme={{
-        components: {
-          Collapse: {
-            contentPadding: 30,
-            headerPadding: 20,
-          },
-        },
-        token: {},
-      }}
-    >
+    <>
       <Button
         onClick={() => setSidebarOpen(true)}
         className={classes.sidebarButton}
@@ -130,7 +128,7 @@ function Sidebar({
           bordered={false}
         />
       </Drawer>
-    </ConfigProvider>
+    </>
   );
 }
 
