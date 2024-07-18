@@ -6,8 +6,8 @@ import { BarGlob3d } from 'glob3d';
 import { useEffect, useState } from 'react';
 
 import './App.css';
+import FloatMenu from './components/FloatMenu';
 import Globe from './components/Globe';
-import Sidebar from './components/Sidebar';
 import { addQueryLimit, endpoints } from './constants/endpoints';
 import { getCountriesArray, prepareCitiesData } from './utils/citiesData';
 
@@ -85,12 +85,17 @@ function App() {
         },
         token: {
           colorPrimary: colorPrimary,
-          colorBgBase: Color(colorBg).lighten(0.15).hex(),
         },
       }}
     >
       <div style={{ minHeight: '100vh' }}>
-        <Sidebar
+        <Globe
+          setGlobeInstance={setGlobeInstance}
+          colorPrimary={colorPrimary}
+          colorBg={colorBg}
+          globeOpacity={globeOpacity}
+        />
+        <FloatMenu
           dataset={dataset}
           setDataset={setDataset}
           queryLimit={queryLimit}
@@ -104,12 +109,6 @@ function App() {
           setColorPrimary={setColorPrimary}
           globeOpacity={globeOpacity}
           setGlobeOpacity={setGlobeOpacity}
-        />
-        <Globe
-          setGlobeInstance={setGlobeInstance}
-          colorPrimary={colorPrimary}
-          colorBg={colorBg}
-          globeOpacity={globeOpacity}
         />
       </div>
     </ConfigProvider>
