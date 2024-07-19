@@ -3,10 +3,11 @@ import {
   GlobalOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { ColorPicker, Flex, FloatButton, Popover, Select, Slider } from 'antd';
+import { ColorPicker, Flex, FloatButton, Select, Slider } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 
 import { endpoints } from '../constants/endpoints';
+import FloatMenuItem from './FloatMenuItem';
 import { WithLabel } from './WithLabel';
 
 type FloatMenuProps = {
@@ -65,7 +66,7 @@ const FloatMenu = ({
         open={isGroupOpen}
         tooltip="Settings"
       >
-        <Popover
+        <FloatMenuItem
           title="Dataset"
           content={
             <Flex gap="middle" vertical>
@@ -102,13 +103,9 @@ const FloatMenu = ({
               </WithLabel>
             </Flex>
           }
-          trigger="click"
-          placement="leftBottom"
-          arrow={false}
-        >
-          <FloatButton icon={<DatabaseOutlined />} tooltip="Dataset" />
-        </Popover>
-        <Popover
+          icon={<DatabaseOutlined />}
+        />
+        <FloatMenuItem
           title="Globe Settings"
           content={
             <Flex gap="middle" vertical>
@@ -135,12 +132,8 @@ const FloatMenu = ({
               </WithLabel>
             </Flex>
           }
-          trigger="click"
-          placement="leftBottom"
-          arrow={false}
-        >
-          <FloatButton icon={<GlobalOutlined />} tooltip="Globe Settings" />
-        </Popover>
+          icon={<GlobalOutlined />}
+        />
       </FloatButton.Group>
     </div>
   );
