@@ -20,6 +20,7 @@ function App() {
   const [colorPrimary, setColorPrimary] = useState('#DD176D');
   const [colorBg, setColorBg] = useState('#201A7E');
   const [globeOpacity, setGlobeOpacity] = useState(0.85);
+  const [isAutoRotate, setAutoRotate] = useState(true);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['dataset', dataset, queryLimit],
@@ -52,6 +53,12 @@ function App() {
       globeInstance.setGlobeColor(colorBg);
     }
   }, [colorBg]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (globeInstance) {
+      globeInstance.setAutoRotate(isAutoRotate);
+    }
+  }, [isAutoRotate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (globeInstance) {
@@ -109,6 +116,8 @@ function App() {
           setColorPrimary={setColorPrimary}
           globeOpacity={globeOpacity}
           setGlobeOpacity={setGlobeOpacity}
+          isAutoRotate={isAutoRotate}
+          setAutoRotate={setAutoRotate}
         />
       </div>
     </ConfigProvider>

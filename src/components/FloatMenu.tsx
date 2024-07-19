@@ -3,7 +3,7 @@ import {
   GlobalOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { ColorPicker, Flex, FloatButton, Select, Slider } from 'antd';
+import { ColorPicker, Flex, FloatButton, Select, Slider, Switch } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 
 import { endpoints } from '../constants/endpoints';
@@ -24,6 +24,8 @@ type FloatMenuProps = {
   setColorPrimary: (color: string) => void;
   globeOpacity: number;
   setGlobeOpacity: (opacity: number) => void;
+  isAutoRotate: boolean;
+  setAutoRotate: (value: boolean) => void;
 };
 
 const FloatMenu = ({
@@ -40,6 +42,8 @@ const FloatMenu = ({
   setColorPrimary,
   globeOpacity,
   setGlobeOpacity,
+  isAutoRotate,
+  setAutoRotate,
 }: FloatMenuProps) => {
   const [isGroupOpen, setIsGroupOpen] = useState(false);
   const menuRef = useRef(null);
@@ -129,6 +133,9 @@ const FloatMenu = ({
                   step={0.05}
                   onChangeComplete={(value) => setGlobeOpacity(value)}
                 />
+              </WithLabel>
+              <WithLabel label="Auto Rotate" horizontal>
+                <Switch checked={isAutoRotate} onChange={setAutoRotate} />
               </WithLabel>
             </Flex>
           }
