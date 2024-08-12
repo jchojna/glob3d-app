@@ -17,8 +17,10 @@ function App() {
   const [queryLimit, setQueryLimit] = useState<number>(100);
   const [allCountries, setAllCountries] = useState<string[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
-  const [colorPrimary, setColorPrimary] = useState('#DD176D');
-  const [colorBg, setColorBg] = useState('#201A7E');
+  const [colors, setColors] = useState({
+    primary: '#DD176D',
+    background: '#201A7E',
+  });
   const [globeOpacity, setGlobeOpacity] = useState(0.85);
   const [isAutoRotate, setAutoRotate] = useState(true);
 
@@ -43,16 +45,18 @@ function App() {
 
   useEffect(() => {
     if (globeInstance) {
-      globeInstance.setActiveColor(colorPrimary);
+      globeInstance.setActiveColor(colors.primary);
     }
-  }, [colorPrimary]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [colors]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    document.body.style.backgroundColor = Color(colorBg).lighten(0.15).hex();
+    document.body.style.backgroundColor = Color(colors.background)
+      .lighten(0.15)
+      .hex();
     if (globeInstance) {
-      globeInstance.setGlobeColor(colorBg);
+      globeInstance.setGlobeColor(colors.background);
     }
-  }, [colorBg]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [colors]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (globeInstance) {
@@ -91,15 +95,14 @@ function App() {
           },
         },
         token: {
-          colorPrimary: colorPrimary,
+          colorPrimary: colors.primary,
         },
       }}
     >
       <div style={{ minHeight: '100vh' }}>
         <Globe
           setGlobeInstance={setGlobeInstance}
-          colorPrimary={colorPrimary}
-          colorBg={colorBg}
+          colors={colors}
           globeOpacity={globeOpacity}
         />
         <FloatMenu
@@ -110,10 +113,8 @@ function App() {
           allCountries={allCountries}
           selectedCountries={selectedCountries}
           setSelectedCountries={setSelectedCountries}
-          colorBg={colorBg}
-          setColorBg={setColorBg}
-          colorPrimary={colorPrimary}
-          setColorPrimary={setColorPrimary}
+          colors={colors}
+          setColors={setColors}
           globeOpacity={globeOpacity}
           setGlobeOpacity={setGlobeOpacity}
           isAutoRotate={isAutoRotate}

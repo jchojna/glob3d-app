@@ -18,10 +18,8 @@ type FloatMenuProps = {
   allCountries: string[];
   selectedCountries: string[];
   setSelectedCountries: (value: string[]) => void;
-  colorBg: string;
-  setColorBg: (color: string) => void;
-  colorPrimary: string;
-  setColorPrimary: (color: string) => void;
+  colors: { primary: string; background: string };
+  setColors: (value: { primary: string; background: string }) => void;
   globeOpacity: number;
   setGlobeOpacity: (opacity: number) => void;
   isAutoRotate: boolean;
@@ -36,10 +34,8 @@ const FloatMenu = ({
   allCountries,
   selectedCountries,
   setSelectedCountries,
-  colorBg,
-  setColorBg,
-  colorPrimary,
-  setColorPrimary,
+  colors,
+  setColors,
   globeOpacity,
   setGlobeOpacity,
   isAutoRotate,
@@ -114,15 +110,20 @@ const FloatMenu = ({
           content={
             <Flex gap="middle" vertical>
               <ColorPicker
-                defaultValue={colorPrimary}
-                onChangeComplete={(color) =>
-                  setColorPrimary(color.toHexString())
+                defaultValue={colors.primary}
+                onChangeComplete={(newColor) =>
+                  setColors({
+                    ...colors,
+                    primary: newColor.toHexString(),
+                  })
                 }
                 showText={() => 'Primary color'}
               />
               <ColorPicker
-                defaultValue={colorBg}
-                onChangeComplete={(color) => setColorBg(color.toHexString())}
+                defaultValue={colors.background}
+                onChangeComplete={(newColor) =>
+                  setColors({ ...colors, background: newColor.toHexString() })
+                }
                 showText={() => 'Background color'}
               />
               <WithLabel label="Globe opacity">
