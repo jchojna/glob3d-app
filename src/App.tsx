@@ -3,7 +3,7 @@ import { ConfigProvider } from 'antd';
 import Color from 'color';
 // @ts-expect-error ignore missing glob3d types
 import { BarGlob3d } from 'glob3d';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 
 import './App.css';
 import FloatMenu from './components/FloatMenu';
@@ -11,13 +11,39 @@ import Globe from './components/Globe';
 import { addQueryLimit, endpoints } from './constants/endpoints';
 import { getCountriesArray, prepareCitiesData } from './utils/citiesData';
 
+const reducer = (
+  state: { primary: string; background: string },
+  action: {
+    type: string;
+    payload: string;
+  }
+) => {
+  switch (action.type) {
+    case 'SET_PRIMARY_COLOR': {
+      return {
+        primary: action.payload,
+        background: state.background,
+      };
+    }
+    case 'SET_BACKGROUND_COLOR': {
+      return {
+        primary: state.primary,
+        background: action.payload,
+      };
+    }
+    default: {
+      throw new Error(`Unhandled action type: ${action.type}`);
+    }
+  }
+};
+
 function App() {
   const [globeInstance, setGlobeInstance] = useState<BarGlob3d | null>(null);
   const [dataset, setDataset] = useState('cities');
   const [queryLimit, setQueryLimit] = useState<number>(100);
   const [allCountries, setAllCountries] = useState<string[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
-  const [colors, setColors] = useState({
+  const [colors, setColors] = useReducer(reducer, {
     primary: '#DD176D',
     background: '#201A7E',
   });
@@ -44,16 +70,11 @@ function App() {
   }, [data]);
 
   useEffect(() => {
-    if (globeInstance) {
-      globeInstance.setActiveColor(colors.primary);
-    }
-  }, [colors]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
     document.body.style.backgroundColor = Color(colors.background)
       .lighten(0.15)
       .hex();
     if (globeInstance) {
+      globeInstance.setActiveColor(colors.primary);
       globeInstance.setGlobeColor(colors.background);
     }
   }, [colors]); // eslint-disable-line react-hooks/exhaustive-deps

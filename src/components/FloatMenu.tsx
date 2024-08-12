@@ -19,7 +19,7 @@ type FloatMenuProps = {
   selectedCountries: string[];
   setSelectedCountries: (value: string[]) => void;
   colors: { primary: string; background: string };
-  setColors: (value: { primary: string; background: string }) => void;
+  setColors: (value: { type: string; payload: string }) => void;
   globeOpacity: number;
   setGlobeOpacity: (opacity: number) => void;
   isAutoRotate: boolean;
@@ -113,8 +113,8 @@ const FloatMenu = ({
                 defaultValue={colors.primary}
                 onChangeComplete={(newColor) =>
                   setColors({
-                    ...colors,
-                    primary: newColor.toHexString(),
+                    type: 'SET_PRIMARY_COLOR',
+                    payload: newColor.toHexString(),
                   })
                 }
                 showText={() => 'Primary color'}
@@ -122,7 +122,10 @@ const FloatMenu = ({
               <ColorPicker
                 defaultValue={colors.background}
                 onChangeComplete={(newColor) =>
-                  setColors({ ...colors, background: newColor.toHexString() })
+                  setColors({
+                    type: 'SET_BACKGROUND_COLOR',
+                    payload: newColor.toHexString(),
+                  })
                 }
                 showText={() => 'Background color'}
               />
