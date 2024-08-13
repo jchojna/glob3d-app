@@ -4,14 +4,12 @@ import { useEffect, useRef } from 'react';
 
 type GlobeProps = {
   setGlobeInstance: (instance: BarGlob3d) => void;
-  settings: { colorPrimary: string; colorBackground: string };
-  globeOpacity: number;
+  settings: SettingsState;
 };
 
 function Globe({
   setGlobeInstance,
-  settings: { colorPrimary, colorBackground },
-  globeOpacity,
+  settings: { colorPrimary, colorBackground, globeOpacity },
 }: GlobeProps) {
   const appRef = useRef<HTMLDivElement | null>(null);
 

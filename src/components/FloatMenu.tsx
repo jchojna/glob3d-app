@@ -18,10 +18,8 @@ type FloatMenuProps = {
   allCountries: string[];
   selectedCountries: string[];
   setSelectedCountries: (value: string[]) => void;
-  settings: { colorPrimary: string; colorBackground: string };
-  setSettings: (value: { type: string; payload: string }) => void;
-  globeOpacity: number;
-  setGlobeOpacity: (opacity: number) => void;
+  settings: SettingsState;
+  setSettings: (value: SettingsAction) => void;
   isAutoRotate: boolean;
   setAutoRotate: (value: boolean) => void;
 };
@@ -36,8 +34,6 @@ const FloatMenu = ({
   setSelectedCountries,
   settings,
   setSettings,
-  globeOpacity,
-  setGlobeOpacity,
   isAutoRotate,
   setAutoRotate,
 }: FloatMenuProps) => {
@@ -56,6 +52,13 @@ const FloatMenu = ({
       });
     }
   }, []);
+
+  const handlePrimaryColorChange = (color: string) => {
+    setSettings({
+      type: 'changed_primary_color',
+      color,
+    });
+  };
 
   return (
     <div ref={menuRef}>
@@ -111,11 +114,8 @@ const FloatMenu = ({
             <Flex gap="middle" vertical>
               <ColorPicker
                 defaultValue={settings.colorPrimary}
-                onChangeComplete={(newColor) =>
-                  setSettings({
-                    type: 'SET_PRIMARY_COLOR',
-                    payload: newColor.toHexString(),
-                  })
+                onChangeComplete={(color) =>
+                  handlePrimaryColorChange(color.toHexString())
                 }
                 showText={() => 'Primary color'}
               />
@@ -123,19 +123,24 @@ const FloatMenu = ({
                 defaultValue={settings.colorBackground}
                 onChangeComplete={(newColor) =>
                   setSettings({
-                    type: 'SET_BACKGROUND_COLOR',
-                    payload: newColor.toHexString(),
+                    type: 'changed_background_color',
+                    color: newColor.toHexString(),
                   })
                 }
                 showText={() => 'Background color'}
               />
               <WithLabel label="Globe opacity">
                 <Slider
-                  defaultValue={globeOpacity}
+                  defaultValue={settings.globeOpacity}
                   min={0}
                   max={1}
                   step={0.05}
-                  onChangeComplete={(value) => setGlobeOpacity(value)}
+                  onChangeComplete={(value) =>
+                    setSettings({
+                      type: 'changed_globe_opacity',
+                      opacity: value,
+                    })
+                  }
                 />
               </WithLabel>
               <WithLabel label="Auto Rotate" horizontal>

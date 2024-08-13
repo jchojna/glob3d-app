@@ -9,7 +9,7 @@ import './App.css';
 import FloatMenu from './components/FloatMenu';
 import Globe from './components/Globe';
 import { addQueryLimit, endpoints } from './constants/endpoints';
-import settingsReducer from './reducers/settings';
+import { initialSettings, settingsReducer } from './reducers/settings';
 import { getCountriesArray, prepareCitiesData } from './utils/citiesData';
 
 function App() {
@@ -18,11 +18,7 @@ function App() {
   const [queryLimit, setQueryLimit] = useState<number>(100);
   const [allCountries, setAllCountries] = useState<string[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
-  const [settings, setSettings] = useReducer(settingsReducer, {
-    colorPrimary: '#DD176D',
-    colorBackground: '#201A7E',
-  });
-  const [globeOpacity, setGlobeOpacity] = useState(0.85);
+  const [settings, setSettings] = useReducer(settingsReducer, initialSettings);
   const [isAutoRotate, setAutoRotate] = useState(true);
 
   const { data, isLoading, error } = useQuery({
@@ -51,6 +47,7 @@ function App() {
     if (globeInstance) {
       globeInstance.setActiveColor(settings.colorPrimary);
       globeInstance.setGlobeColor(settings.colorBackground);
+      globeInstance.setGlobeOpacity(settings.globeOpacity);
     }
   }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -59,12 +56,6 @@ function App() {
       globeInstance.setAutoRotate(isAutoRotate);
     }
   }, [isAutoRotate]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (globeInstance) {
-      globeInstance.setGlobeOpacity(globeOpacity);
-    }
-  }, [globeOpacity]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading) {
     globeInstance && globeInstance.onLoading();
@@ -96,11 +87,7 @@ function App() {
       }}
     >
       <div style={{ minHeight: '100vh' }}>
-        <Globe
-          setGlobeInstance={setGlobeInstance}
-          settings={settings}
-          globeOpacity={globeOpacity}
-        />
+        <Globe setGlobeInstance={setGlobeInstance} settings={settings} />
         <FloatMenu
           dataset={dataset}
           setDataset={setDataset}
@@ -111,8 +98,6 @@ function App() {
           setSelectedCountries={setSelectedCountries}
           settings={settings}
           setSettings={setSettings}
-          globeOpacity={globeOpacity}
-          setGlobeOpacity={setGlobeOpacity}
           isAutoRotate={isAutoRotate}
           setAutoRotate={setAutoRotate}
         />

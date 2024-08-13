@@ -10,3 +10,15 @@ type GlobeData = {
   };
   value: number;
 };
+
+type SettingsState = {
+  colorPrimary: string;
+  colorBackground: string;
+  globeOpacity: number;
+};
+
+type SettingsAction = {
+  type: string;
+  color?: string;
+  opacity?: number;
+};

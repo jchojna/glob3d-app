@@ -1,21 +1,30 @@
-const reducer = (
-  state: { colorPrimary: string; colorBackground: string },
-  action: {
-    type: string;
-    payload: string;
-  }
+export const initialSettings: SettingsState = {
+  colorPrimary: '#DD176D',
+  colorBackground: '#201A7E',
+  globeOpacity: 0.85,
+};
+
+export const settingsReducer = (
+  state: SettingsState,
+  action: SettingsAction
 ) => {
   switch (action.type) {
-    case 'SET_PRIMARY_COLOR': {
+    case 'changed_primary_color': {
       return {
-        colorPrimary: action.payload,
-        colorBackground: state.colorBackground,
+        ...state,
+        colorPrimary: action.color || initialSettings.colorPrimary,
       };
     }
-    case 'SET_BACKGROUND_COLOR': {
+    case 'changed_background_color': {
       return {
-        colorPrimary: state.colorPrimary,
-        colorBackground: action.payload,
+        ...state,
+        colorBackground: action.color || initialSettings.colorBackground,
+      };
+    }
+    case 'changed_globe_opacity': {
+      return {
+        ...state,
+        globeOpacity: action.opacity || initialSettings.globeOpacity,
       };
     }
     default: {
@@ -23,5 +32,3 @@ const reducer = (
     }
   }
 };
-
-export default reducer;
