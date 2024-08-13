@@ -9,33 +9,8 @@ import './App.css';
 import FloatMenu from './components/FloatMenu';
 import Globe from './components/Globe';
 import { addQueryLimit, endpoints } from './constants/endpoints';
+import settingsReducer from './reducers/settings';
 import { getCountriesArray, prepareCitiesData } from './utils/citiesData';
-
-const reducer = (
-  state: { primary: string; background: string },
-  action: {
-    type: string;
-    payload: string;
-  }
-) => {
-  switch (action.type) {
-    case 'SET_PRIMARY_COLOR': {
-      return {
-        primary: action.payload,
-        background: state.background,
-      };
-    }
-    case 'SET_BACKGROUND_COLOR': {
-      return {
-        primary: state.primary,
-        background: action.payload,
-      };
-    }
-    default: {
-      throw new Error(`Unhandled action type: ${action.type}`);
-    }
-  }
-};
 
 function App() {
   const [globeInstance, setGlobeInstance] = useState<BarGlob3d | null>(null);
@@ -43,9 +18,9 @@ function App() {
   const [queryLimit, setQueryLimit] = useState<number>(100);
   const [allCountries, setAllCountries] = useState<string[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
-  const [colors, setColors] = useReducer(reducer, {
-    primary: '#DD176D',
-    background: '#201A7E',
+  const [settings, setSettings] = useReducer(settingsReducer, {
+    colorPrimary: '#DD176D',
+    colorBackground: '#201A7E',
   });
   const [globeOpacity, setGlobeOpacity] = useState(0.85);
   const [isAutoRotate, setAutoRotate] = useState(true);
@@ -70,14 +45,14 @@ function App() {
   }, [data]);
 
   useEffect(() => {
-    document.body.style.backgroundColor = Color(colors.background)
+    document.body.style.backgroundColor = Color(settings.colorBackground)
       .lighten(0.15)
       .hex();
     if (globeInstance) {
-      globeInstance.setActiveColor(colors.primary);
-      globeInstance.setGlobeColor(colors.background);
+      globeInstance.setActiveColor(settings.colorPrimary);
+      globeInstance.setGlobeColor(settings.colorBackground);
     }
-  }, [colors]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (globeInstance) {
@@ -116,14 +91,14 @@ function App() {
           },
         },
         token: {
-          colorPrimary: colors.primary,
+          colorPrimary: settings.colorPrimary,
         },
       }}
     >
       <div style={{ minHeight: '100vh' }}>
         <Globe
           setGlobeInstance={setGlobeInstance}
-          colors={colors}
+          settings={settings}
           globeOpacity={globeOpacity}
         />
         <FloatMenu
@@ -134,8 +109,8 @@ function App() {
           allCountries={allCountries}
           selectedCountries={selectedCountries}
           setSelectedCountries={setSelectedCountries}
-          colors={colors}
-          setColors={setColors}
+          settings={settings}
+          setSettings={setSettings}
           globeOpacity={globeOpacity}
           setGlobeOpacity={setGlobeOpacity}
           isAutoRotate={isAutoRotate}
