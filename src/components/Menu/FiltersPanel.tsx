@@ -1,9 +1,9 @@
 import { DatabaseOutlined } from '@ant-design/icons';
 import { Flex, Select, Slider } from 'antd';
 
-import { endpoints } from '../constants/endpoints';
+import { endpoints } from '../../constants/endpoints';
+import { WithLabel } from '../WithLabel';
 import FloatMenuItem from './FloatMenuItem';
-import { WithLabel } from './WithLabel';
 
 type FiltersPanelProps = {
   state: DataFiltersState;

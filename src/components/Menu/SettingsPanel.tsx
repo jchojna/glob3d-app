@@ -1,8 +1,8 @@
 import { GlobalOutlined } from '@ant-design/icons';
 import { ColorPicker, Flex, Slider, Switch } from 'antd';
 
+import { WithLabel } from '../WithLabel';
 import FloatMenuItem from './FloatMenuItem';
-import { WithLabel } from './WithLabel';
 
 type SettingsPanelProps = {
   state: SettingsState;
