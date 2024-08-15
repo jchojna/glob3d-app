@@ -38,10 +38,47 @@ const FloatMenu = ({
     }
   }, []);
 
+  const handleDatasetChange = (dataset: string) => {
+    setDataFilters({
+      type: 'changed_dataset',
+      dataset,
+    });
+  };
+  const handleQueryLimitChange = (queryLimit: number) => {
+    setDataFilters({
+      type: 'changed_query_limit',
+      queryLimit,
+    });
+  };
+  const handleSelectedCountriesChange = (countries: string[]) => {
+    setDataFilters({
+      type: 'changed_selected_countries',
+      countries,
+    });
+  };
+
   const handlePrimaryColorChange = (color: string) => {
     setSettings({
       type: 'changed_primary_color',
       color,
+    });
+  };
+  const handleBackgroundColorChange = (color: string) => {
+    setSettings({
+      type: 'changed_background_color',
+      color,
+    });
+  };
+  const handleGlobeOpacityChange = (opacity: number) => {
+    setSettings({
+      type: 'changed_globe_opacity',
+      opacity,
+    });
+  };
+  const handleAutoRotateChange = (autoRotate: boolean) => {
+    setSettings({
+      type: 'changed_auto_rotate',
+      autoRotate,
     });
   };
 
@@ -55,15 +92,13 @@ const FloatMenu = ({
         tooltip="Settings"
       >
         <FloatMenuItem
-          title="Dataset"
+          title="Data Filters"
           content={
             <Flex gap="middle" vertical>
               <WithLabel label="Select dataset">
                 <Select
                   defaultValue={dataset}
-                  onChange={(value) =>
-                    setDataFilters({ type: 'changed_dataset', dataset: value })
-                  }
+                  onChange={handleDatasetChange}
                   options={Object.entries(endpoints).map(([value, label]) => ({
                     value,
                     label: label.label,
@@ -75,12 +110,7 @@ const FloatMenu = ({
                   defaultValue={queryLimit}
                   min={0}
                   max={100}
-                  onChangeComplete={(value) =>
-                    setDataFilters({
-                      type: 'changed_query_limit',
-                      queryLimit: value,
-                    })
-                  }
+                  onChangeComplete={handleQueryLimitChange}
                 />
               </WithLabel>
               <WithLabel label="Filter countries">
@@ -88,12 +118,7 @@ const FloatMenu = ({
                   mode="multiple"
                   maxTagCount={1}
                   value={selectedCountries}
-                  onChange={(value) =>
-                    setDataFilters({
-                      type: 'changed_selected_countries',
-                      countries: value,
-                    })
-                  }
+                  onChange={handleSelectedCountriesChange}
                   placeholder="All countries"
                   options={allCountries.map((country) => ({
                     label: country,
@@ -118,11 +143,8 @@ const FloatMenu = ({
               />
               <ColorPicker
                 defaultValue={colorBackground}
-                onChangeComplete={(newColor) =>
-                  setSettings({
-                    type: 'changed_background_color',
-                    color: newColor.toHexString(),
-                  })
+                onChangeComplete={(color) =>
+                  handleBackgroundColorChange(color.toHexString())
                 }
                 showText={() => 'Background color'}
               />
@@ -132,23 +154,13 @@ const FloatMenu = ({
                   min={0}
                   max={1}
                   step={0.05}
-                  onChangeComplete={(value) =>
-                    setSettings({
-                      type: 'changed_globe_opacity',
-                      opacity: value,
-                    })
-                  }
+                  onChangeComplete={handleGlobeOpacityChange}
                 />
               </WithLabel>
               <WithLabel label="Auto Rotate" horizontal>
                 <Switch
                   checked={autoRotate}
-                  onChange={(value) =>
-                    setSettings({
-                      type: 'changed_auto_rotate',
-                      autoRotate: value,
-                    })
-                  }
+                  onChange={handleAutoRotateChange}
                 />
               </WithLabel>
             </Flex>
