@@ -11,45 +11,22 @@ import FloatMenuItem from './FloatMenuItem';
 import { WithLabel } from './WithLabel';
 
 type FloatMenuProps = {
-  dataset: string;
-  setDataset: (value: string) => void;
-  queryLimit: number;
-  setQueryLimit: (value: number) => void;
-  allCountries: string[];
-  selectedCountries: string[];
-  setSelectedCountries: (value: string[]) => void;
-  colorBg: string;
-  setColorBg: (color: string) => void;
-  colorPrimary: string;
-  setColorPrimary: (color: string) => void;
-  globeOpacity: number;
-  setGlobeOpacity: (opacity: number) => void;
-  isAutoRotate: boolean;
-  setAutoRotate: (value: boolean) => void;
+  dataFilters: DataFiltersState;
+  setDataFilters: (value: DataFiltersAction) => void;
+  settings: SettingsState;
+  setSettings: (value: SettingsAction) => void;
 };
 
 const FloatMenu = ({
-  dataset,
-  setDataset,
-  queryLimit,
-  setQueryLimit,
-  allCountries,
-  selectedCountries,
-  setSelectedCountries,
-  colorBg,
-  setColorBg,
-  colorPrimary,
-  setColorPrimary,
-  globeOpacity,
-  setGlobeOpacity,
-  isAutoRotate,
-  setAutoRotate,
+  dataFilters: { dataset, queryLimit, selectedCountries, allCountries },
+  setDataFilters,
+  settings: { colorPrimary, colorBackground, globeOpacity, autoRotate },
+  setSettings,
 }: FloatMenuProps) => {
   const [isGroupOpen, setIsGroupOpen] = useState(false);
   const menuRef = useRef(null);
   const isMounted = useRef(false);
 
-  // comment here...
   useEffect(() => {
     if (menuRef.current && !isMounted.current) {
       isMounted.current = true; // subscribe only once
@@ -61,6 +38,50 @@ const FloatMenu = ({
     }
   }, []);
 
+  const handleDatasetChange = (dataset: string) => {
+    setDataFilters({
+      type: 'changed_dataset',
+      dataset,
+    });
+  };
+  const handleQueryLimitChange = (queryLimit: number) => {
+    setDataFilters({
+      type: 'changed_query_limit',
+      queryLimit,
+    });
+  };
+  const handleSelectedCountriesChange = (countries: string[]) => {
+    setDataFilters({
+      type: 'changed_selected_countries',
+      countries,
+    });
+  };
+
+  const handlePrimaryColorChange = (color: string) => {
+    setSettings({
+      type: 'changed_primary_color',
+      color,
+    });
+  };
+  const handleBackgroundColorChange = (color: string) => {
+    setSettings({
+      type: 'changed_background_color',
+      color,
+    });
+  };
+  const handleGlobeOpacityChange = (opacity: number) => {
+    setSettings({
+      type: 'changed_globe_opacity',
+      opacity,
+    });
+  };
+  const handleAutoRotateChange = (autoRotate: boolean) => {
+    setSettings({
+      type: 'changed_auto_rotate',
+      autoRotate,
+    });
+  };
+
   return (
     <div ref={menuRef}>
       <FloatButton.Group
@@ -71,13 +92,13 @@ const FloatMenu = ({
         tooltip="Settings"
       >
         <FloatMenuItem
-          title="Dataset"
+          title="Data Filters"
           content={
             <Flex gap="middle" vertical>
               <WithLabel label="Select dataset">
                 <Select
                   defaultValue={dataset}
-                  onChange={(value) => setDataset(value)}
+                  onChange={handleDatasetChange}
                   options={Object.entries(endpoints).map(([value, label]) => ({
                     value,
                     label: label.label,
@@ -89,7 +110,7 @@ const FloatMenu = ({
                   defaultValue={queryLimit}
                   min={0}
                   max={100}
-                  onChangeComplete={(value) => setQueryLimit(value)}
+                  onChangeComplete={handleQueryLimitChange}
                 />
               </WithLabel>
               <WithLabel label="Filter countries">
@@ -97,7 +118,7 @@ const FloatMenu = ({
                   mode="multiple"
                   maxTagCount={1}
                   value={selectedCountries}
-                  onChange={(value) => setSelectedCountries(value)}
+                  onChange={handleSelectedCountriesChange}
                   placeholder="All countries"
                   options={allCountries.map((country) => ({
                     label: country,
@@ -116,13 +137,15 @@ const FloatMenu = ({
               <ColorPicker
                 defaultValue={colorPrimary}
                 onChangeComplete={(color) =>
-                  setColorPrimary(color.toHexString())
+                  handlePrimaryColorChange(color.toHexString())
                 }
                 showText={() => 'Primary color'}
               />
               <ColorPicker
-                defaultValue={colorBg}
-                onChangeComplete={(color) => setColorBg(color.toHexString())}
+                defaultValue={colorBackground}
+                onChangeComplete={(color) =>
+                  handleBackgroundColorChange(color.toHexString())
+                }
                 showText={() => 'Background color'}
               />
               <WithLabel label="Globe opacity">
@@ -131,11 +154,14 @@ const FloatMenu = ({
                   min={0}
                   max={1}
                   step={0.05}
-                  onChangeComplete={(value) => setGlobeOpacity(value)}
+                  onChangeComplete={handleGlobeOpacityChange}
                 />
               </WithLabel>
               <WithLabel label="Auto Rotate" horizontal>
-                <Switch checked={isAutoRotate} onChange={setAutoRotate} />
+                <Switch
+                  checked={autoRotate}
+                  onChange={handleAutoRotateChange}
+                />
               </WithLabel>
             </Flex>
           }

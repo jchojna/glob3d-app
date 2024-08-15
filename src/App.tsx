@@ -3,31 +3,33 @@ import { ConfigProvider } from 'antd';
 import Color from 'color';
 // @ts-expect-error ignore missing glob3d types
 import { BarGlob3d } from 'glob3d';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 
 import './App.css';
 import FloatMenu from './components/FloatMenu';
 import Globe from './components/Globe';
 import { addQueryLimit, endpoints } from './constants/endpoints';
+import { dataFiltersReducer, initialDataFilters } from './reducers/dataFilters';
+import { initialSettings, settingsReducer } from './reducers/settings';
 import { getCountriesArray, prepareCitiesData } from './utils/citiesData';
 
 function App() {
   const [globeInstance, setGlobeInstance] = useState<BarGlob3d | null>(null);
-  const [dataset, setDataset] = useState('cities');
-  const [queryLimit, setQueryLimit] = useState<number>(100);
-  const [allCountries, setAllCountries] = useState<string[]>([]);
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
-  const [colorPrimary, setColorPrimary] = useState('#DD176D');
-  const [colorBg, setColorBg] = useState('#201A7E');
-  const [globeOpacity, setGlobeOpacity] = useState(0.85);
-  const [isAutoRotate, setAutoRotate] = useState(true);
+  const [dataFilters, setDataFilters] = useReducer(
+    dataFiltersReducer,
+    initialDataFilters
+  );
+  const [settings, setSettings] = useReducer(settingsReducer, initialSettings);
+  const isDataReady = useRef(false);
 
+  const { dataset, queryLimit, selectedCountries } = dataFilters;
   const { data, isLoading, error } = useQuery({
     queryKey: ['dataset', dataset, queryLimit],
     queryFn: async () => {
       const response = await fetch(
         addQueryLimit(endpoints[dataset].url, queryLimit)
       );
+      isDataReady.current = false;
       return response.json();
     },
   });
@@ -37,34 +39,25 @@ function App() {
       const allCountries = getCountriesArray(
         prepareCitiesData(data.results)
       ).sort();
-      setAllCountries(allCountries);
+      setDataFilters({
+        type: 'changed_all_countries',
+        countries: allCountries,
+      });
+      isDataReady.current = true;
     }
   }, [data]);
 
   useEffect(() => {
+    document.body.style.backgroundColor = Color(settings.colorBackground)
+      .lighten(0.15)
+      .hex();
     if (globeInstance) {
-      globeInstance.setActiveColor(colorPrimary);
+      globeInstance.setActiveColor(settings.colorPrimary);
+      globeInstance.setGlobeColor(settings.colorBackground);
+      globeInstance.setGlobeOpacity(settings.globeOpacity);
+      globeInstance.setAutoRotate(settings.autoRotate);
     }
-  }, [colorPrimary]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    document.body.style.backgroundColor = Color(colorBg).lighten(0.15).hex();
-    if (globeInstance) {
-      globeInstance.setGlobeColor(colorBg);
-    }
-  }, [colorBg]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (globeInstance) {
-      globeInstance.setAutoRotate(isAutoRotate);
-    }
-  }, [isAutoRotate]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (globeInstance) {
-      globeInstance.setGlobeOpacity(globeOpacity);
-    }
-  }, [globeOpacity]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading) {
     globeInstance && globeInstance.onLoading();
@@ -74,7 +67,7 @@ function App() {
     globeInstance && globeInstance.onError();
   }
 
-  if (data) {
+  if (data && isDataReady.current) {
     const results = prepareCitiesData(data.results).filter((d) =>
       selectedCountries.length > 0 ? selectedCountries.includes(d.country) : d
     );
@@ -91,33 +84,17 @@ function App() {
           },
         },
         token: {
-          colorPrimary: colorPrimary,
+          colorPrimary: settings.colorPrimary,
         },
       }}
     >
       <div style={{ minHeight: '100vh' }}>
-        <Globe
-          setGlobeInstance={setGlobeInstance}
-          colorPrimary={colorPrimary}
-          colorBg={colorBg}
-          globeOpacity={globeOpacity}
-        />
+        <Globe setGlobeInstance={setGlobeInstance} settings={settings} />
         <FloatMenu
-          dataset={dataset}
-          setDataset={setDataset}
-          queryLimit={queryLimit}
-          setQueryLimit={setQueryLimit}
-          allCountries={allCountries}
-          selectedCountries={selectedCountries}
-          setSelectedCountries={setSelectedCountries}
-          colorBg={colorBg}
-          setColorBg={setColorBg}
-          colorPrimary={colorPrimary}
-          setColorPrimary={setColorPrimary}
-          globeOpacity={globeOpacity}
-          setGlobeOpacity={setGlobeOpacity}
-          isAutoRotate={isAutoRotate}
-          setAutoRotate={setAutoRotate}
+          dataFilters={dataFilters}
+          setDataFilters={setDataFilters}
+          settings={settings}
+          setSettings={setSettings}
         />
       </div>
     </ConfigProvider>

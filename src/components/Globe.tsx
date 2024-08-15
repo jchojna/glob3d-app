@@ -4,16 +4,12 @@ import { useEffect, useRef } from 'react';
 
 type GlobeProps = {
   setGlobeInstance: (instance: BarGlob3d) => void;
-  colorPrimary: string;
-  colorBg: string;
-  globeOpacity: number;
+  settings: SettingsState;
 };
 
 function Globe({
   setGlobeInstance,
-  colorPrimary,
-  colorBg,
-  globeOpacity,
+  settings: { colorPrimary, colorBackground, globeOpacity },
 }: GlobeProps) {
   const appRef = useRef<HTMLDivElement | null>(null);
 
@@ -22,7 +18,7 @@ function Globe({
       setGlobeInstance(
         new BarGlob3d(appRef.current, null, {
           tooltipValueSuffix: 'people',
-          globeColor: colorBg,
+          globeColor: colorBackground,
           barColor: '#b4afe8',
           barActiveColor: colorPrimary,
           tooltipActiveBackgroundColor: colorPrimary,
