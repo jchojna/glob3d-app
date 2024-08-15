@@ -15,10 +15,12 @@ type SettingsState = {
   colorPrimary: string;
   colorBackground: string;
   globeOpacity: number;
+  autoRotate: boolean;
 };
 
 type SettingsAction = {
   type: string;
   color?: string;
   opacity?: number;
+  autoRotate?: boolean;
 };

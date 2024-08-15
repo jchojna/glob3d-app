@@ -20,8 +20,6 @@ type FloatMenuProps = {
   setSelectedCountries: (value: string[]) => void;
   settings: SettingsState;
   setSettings: (value: SettingsAction) => void;
-  isAutoRotate: boolean;
-  setAutoRotate: (value: boolean) => void;
 };
 
 const FloatMenu = ({
@@ -32,16 +30,13 @@ const FloatMenu = ({
   allCountries,
   selectedCountries,
   setSelectedCountries,
-  settings,
+  settings: { colorPrimary, colorBackground, globeOpacity, autoRotate },
   setSettings,
-  isAutoRotate,
-  setAutoRotate,
 }: FloatMenuProps) => {
   const [isGroupOpen, setIsGroupOpen] = useState(false);
   const menuRef = useRef(null);
   const isMounted = useRef(false);
 
-  // comment here...
   useEffect(() => {
     if (menuRef.current && !isMounted.current) {
       isMounted.current = true; // subscribe only once
@@ -113,14 +108,14 @@ const FloatMenu = ({
           content={
             <Flex gap="middle" vertical>
               <ColorPicker
-                defaultValue={settings.colorPrimary}
+                defaultValue={colorPrimary}
                 onChangeComplete={(color) =>
                   handlePrimaryColorChange(color.toHexString())
                 }
                 showText={() => 'Primary color'}
               />
               <ColorPicker
-                defaultValue={settings.colorBackground}
+                defaultValue={colorBackground}
                 onChangeComplete={(newColor) =>
                   setSettings({
                     type: 'changed_background_color',
@@ -131,7 +126,7 @@ const FloatMenu = ({
               />
               <WithLabel label="Globe opacity">
                 <Slider
-                  defaultValue={settings.globeOpacity}
+                  defaultValue={globeOpacity}
                   min={0}
                   max={1}
                   step={0.05}
@@ -144,7 +139,15 @@ const FloatMenu = ({
                 />
               </WithLabel>
               <WithLabel label="Auto Rotate" horizontal>
-                <Switch checked={isAutoRotate} onChange={setAutoRotate} />
+                <Switch
+                  checked={autoRotate}
+                  onChange={(value) =>
+                    setSettings({
+                      type: 'changed_auto_rotate',
+                      autoRotate: value,
+                    })
+                  }
+                />
               </WithLabel>
             </Flex>
           }

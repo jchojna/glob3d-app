@@ -19,7 +19,6 @@ function App() {
   const [allCountries, setAllCountries] = useState<string[]>([]);
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
   const [settings, setSettings] = useReducer(settingsReducer, initialSettings);
-  const [isAutoRotate, setAutoRotate] = useState(true);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['dataset', dataset, queryLimit],
@@ -48,14 +47,9 @@ function App() {
       globeInstance.setActiveColor(settings.colorPrimary);
       globeInstance.setGlobeColor(settings.colorBackground);
       globeInstance.setGlobeOpacity(settings.globeOpacity);
+      globeInstance.setAutoRotate(settings.autoRotate);
     }
   }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (globeInstance) {
-      globeInstance.setAutoRotate(isAutoRotate);
-    }
-  }, [isAutoRotate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading) {
     globeInstance && globeInstance.onLoading();
@@ -98,8 +92,6 @@ function App() {
           setSelectedCountries={setSelectedCountries}
           settings={settings}
           setSettings={setSettings}
-          isAutoRotate={isAutoRotate}
-          setAutoRotate={setAutoRotate}
         />
       </div>
     </ConfigProvider>
