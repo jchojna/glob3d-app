@@ -3,7 +3,7 @@ import { ConfigProvider } from 'antd';
 import Color from 'color';
 // @ts-expect-error ignore missing glob3d types
 import { BarGlob3d } from 'glob3d';
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 
 import './App.css';
 import FloatMenu from './components/FloatMenu';
@@ -20,12 +20,15 @@ function App() {
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
   const [settings, setSettings] = useReducer(settingsReducer, initialSettings);
 
+  const isDataReady = useRef(false);
+
   const { data, isLoading, error } = useQuery({
     queryKey: ['dataset', dataset, queryLimit],
     queryFn: async () => {
       const response = await fetch(
         addQueryLimit(endpoints[dataset].url, queryLimit)
       );
+      isDataReady.current = false;
       return response.json();
     },
   });
@@ -36,6 +39,7 @@ function App() {
         prepareCitiesData(data.results)
       ).sort();
       setAllCountries(allCountries);
+      isDataReady.current = true;
     }
   }, [data]);
 
@@ -59,7 +63,7 @@ function App() {
     globeInstance && globeInstance.onError();
   }
 
-  if (data) {
+  if (data && isDataReady.current) {
     const results = prepareCitiesData(data.results).filter((d) =>
       selectedCountries.length > 0 ? selectedCountries.includes(d.country) : d
     );
