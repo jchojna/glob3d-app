@@ -24,3 +24,17 @@ type SettingsAction = {
   opacity?: number;
   autoRotate?: boolean;
 };
+
+type DataFiltersState = {
+  dataset: string;
+  queryLimit: number;
+  allCountries: string[];
+  selectedCountries: string[];
+};
+
+type DataFiltersAction = {
+  type: string;
+  dataset?: string;
+  queryLimit?: number;
+  countries?: string[];
+};

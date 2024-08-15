@@ -11,25 +11,15 @@ import FloatMenuItem from './FloatMenuItem';
 import { WithLabel } from './WithLabel';
 
 type FloatMenuProps = {
-  dataset: string;
-  setDataset: (value: string) => void;
-  queryLimit: number;
-  setQueryLimit: (value: number) => void;
-  allCountries: string[];
-  selectedCountries: string[];
-  setSelectedCountries: (value: string[]) => void;
+  dataFilters: DataFiltersState;
+  setDataFilters: (value: DataFiltersAction) => void;
   settings: SettingsState;
   setSettings: (value: SettingsAction) => void;
 };
 
 const FloatMenu = ({
-  dataset,
-  setDataset,
-  queryLimit,
-  setQueryLimit,
-  allCountries,
-  selectedCountries,
-  setSelectedCountries,
+  dataFilters: { dataset, queryLimit, selectedCountries, allCountries },
+  setDataFilters,
   settings: { colorPrimary, colorBackground, globeOpacity, autoRotate },
   setSettings,
 }: FloatMenuProps) => {
@@ -71,7 +61,9 @@ const FloatMenu = ({
               <WithLabel label="Select dataset">
                 <Select
                   defaultValue={dataset}
-                  onChange={(value) => setDataset(value)}
+                  onChange={(value) =>
+                    setDataFilters({ type: 'changed_dataset', dataset: value })
+                  }
                   options={Object.entries(endpoints).map(([value, label]) => ({
                     value,
                     label: label.label,
@@ -83,7 +75,12 @@ const FloatMenu = ({
                   defaultValue={queryLimit}
                   min={0}
                   max={100}
-                  onChangeComplete={(value) => setQueryLimit(value)}
+                  onChangeComplete={(value) =>
+                    setDataFilters({
+                      type: 'changed_query_limit',
+                      queryLimit: value,
+                    })
+                  }
                 />
               </WithLabel>
               <WithLabel label="Filter countries">
@@ -91,7 +88,12 @@ const FloatMenu = ({
                   mode="multiple"
                   maxTagCount={1}
                   value={selectedCountries}
-                  onChange={(value) => setSelectedCountries(value)}
+                  onChange={(value) =>
+                    setDataFilters({
+                      type: 'changed_selected_countries',
+                      countries: value,
+                    })
+                  }
                   placeholder="All countries"
                   options={allCountries.map((country) => ({
                     label: country,

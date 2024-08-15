@@ -9,19 +9,20 @@ import './App.css';
 import FloatMenu from './components/FloatMenu';
 import Globe from './components/Globe';
 import { addQueryLimit, endpoints } from './constants/endpoints';
+import { dataFiltersReducer, initialDataFilters } from './reducers/dataFilters';
 import { initialSettings, settingsReducer } from './reducers/settings';
 import { getCountriesArray, prepareCitiesData } from './utils/citiesData';
 
 function App() {
   const [globeInstance, setGlobeInstance] = useState<BarGlob3d | null>(null);
-  const [dataset, setDataset] = useState('cities');
-  const [queryLimit, setQueryLimit] = useState<number>(100);
-  const [allCountries, setAllCountries] = useState<string[]>([]);
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [dataFilters, setDataFilters] = useReducer(
+    dataFiltersReducer,
+    initialDataFilters
+  );
   const [settings, setSettings] = useReducer(settingsReducer, initialSettings);
-
   const isDataReady = useRef(false);
 
+  const { dataset, queryLimit, selectedCountries } = dataFilters;
   const { data, isLoading, error } = useQuery({
     queryKey: ['dataset', dataset, queryLimit],
     queryFn: async () => {
@@ -38,7 +39,10 @@ function App() {
       const allCountries = getCountriesArray(
         prepareCitiesData(data.results)
       ).sort();
-      setAllCountries(allCountries);
+      setDataFilters({
+        type: 'changed_all_countries',
+        countries: allCountries,
+      });
       isDataReady.current = true;
     }
   }, [data]);
@@ -87,13 +91,8 @@ function App() {
       <div style={{ minHeight: '100vh' }}>
         <Globe setGlobeInstance={setGlobeInstance} settings={settings} />
         <FloatMenu
-          dataset={dataset}
-          setDataset={setDataset}
-          queryLimit={queryLimit}
-          setQueryLimit={setQueryLimit}
-          allCountries={allCountries}
-          selectedCountries={selectedCountries}
-          setSelectedCountries={setSelectedCountries}
+          dataFilters={dataFilters}
+          setDataFilters={setDataFilters}
           settings={settings}
           setSettings={setSettings}
         />
