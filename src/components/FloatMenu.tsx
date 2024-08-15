@@ -1,14 +1,9 @@
-import {
-  DatabaseOutlined,
-  GlobalOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
-import { ColorPicker, Flex, FloatButton, Select, Slider, Switch } from 'antd';
+import { SettingOutlined } from '@ant-design/icons';
+import { FloatButton } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 
-import { endpoints } from '../constants/endpoints';
-import FloatMenuItem from './FloatMenuItem';
-import { WithLabel } from './WithLabel';
+import FiltersPanel from './FiltersPanel';
+import SettingsPanel from './SettingsPanel';
 
 type FloatMenuProps = {
   dataFilters: DataFiltersState;
@@ -18,9 +13,9 @@ type FloatMenuProps = {
 };
 
 const FloatMenu = ({
-  dataFilters: { dataset, queryLimit, selectedCountries, allCountries },
+  dataFilters,
   setDataFilters,
-  settings: { colorPrimary, colorBackground, globeOpacity, autoRotate },
+  settings,
   setSettings,
 }: FloatMenuProps) => {
   const [isGroupOpen, setIsGroupOpen] = useState(false);
@@ -38,50 +33,6 @@ const FloatMenu = ({
     }
   }, []);
 
-  const handleDatasetChange = (dataset: string) => {
-    setDataFilters({
-      type: 'changed_dataset',
-      dataset,
-    });
-  };
-  const handleQueryLimitChange = (queryLimit: number) => {
-    setDataFilters({
-      type: 'changed_query_limit',
-      queryLimit,
-    });
-  };
-  const handleSelectedCountriesChange = (countries: string[]) => {
-    setDataFilters({
-      type: 'changed_selected_countries',
-      countries,
-    });
-  };
-
-  const handlePrimaryColorChange = (color: string) => {
-    setSettings({
-      type: 'changed_primary_color',
-      color,
-    });
-  };
-  const handleBackgroundColorChange = (color: string) => {
-    setSettings({
-      type: 'changed_background_color',
-      color,
-    });
-  };
-  const handleGlobeOpacityChange = (opacity: number) => {
-    setSettings({
-      type: 'changed_globe_opacity',
-      opacity,
-    });
-  };
-  const handleAutoRotateChange = (autoRotate: boolean) => {
-    setSettings({
-      type: 'changed_auto_rotate',
-      autoRotate,
-    });
-  };
-
   return (
     <div ref={menuRef}>
       <FloatButton.Group
@@ -91,82 +42,8 @@ const FloatMenu = ({
         open={isGroupOpen}
         tooltip="Settings"
       >
-        <FloatMenuItem
-          title="Data Filters"
-          content={
-            <Flex gap="middle" vertical>
-              <WithLabel label="Select dataset">
-                <Select
-                  defaultValue={dataset}
-                  onChange={handleDatasetChange}
-                  options={Object.entries(endpoints).map(([value, label]) => ({
-                    value,
-                    label: label.label,
-                  }))}
-                />
-              </WithLabel>
-              <WithLabel label={`Results limit [${queryLimit}]`}>
-                <Slider
-                  defaultValue={queryLimit}
-                  min={0}
-                  max={100}
-                  onChangeComplete={handleQueryLimitChange}
-                />
-              </WithLabel>
-              <WithLabel label="Filter countries">
-                <Select
-                  mode="multiple"
-                  maxTagCount={1}
-                  value={selectedCountries}
-                  onChange={handleSelectedCountriesChange}
-                  placeholder="All countries"
-                  options={allCountries.map((country) => ({
-                    label: country,
-                    value: country,
-                  }))}
-                />
-              </WithLabel>
-            </Flex>
-          }
-          icon={<DatabaseOutlined />}
-        />
-        <FloatMenuItem
-          title="Globe Settings"
-          content={
-            <Flex gap="middle" vertical>
-              <ColorPicker
-                defaultValue={colorPrimary}
-                onChangeComplete={(color) =>
-                  handlePrimaryColorChange(color.toHexString())
-                }
-                showText={() => 'Primary color'}
-              />
-              <ColorPicker
-                defaultValue={colorBackground}
-                onChangeComplete={(color) =>
-                  handleBackgroundColorChange(color.toHexString())
-                }
-                showText={() => 'Background color'}
-              />
-              <WithLabel label="Globe opacity">
-                <Slider
-                  defaultValue={globeOpacity}
-                  min={0}
-                  max={1}
-                  step={0.05}
-                  onChangeComplete={handleGlobeOpacityChange}
-                />
-              </WithLabel>
-              <WithLabel label="Auto Rotate" horizontal>
-                <Switch
-                  checked={autoRotate}
-                  onChange={handleAutoRotateChange}
-                />
-              </WithLabel>
-            </Flex>
-          }
-          icon={<GlobalOutlined />}
-        />
+        <FiltersPanel state={dataFilters} dispatch={setDataFilters} />
+        <SettingsPanel state={settings} dispatch={setSettings} />
       </FloatButton.Group>
     </div>
   );
