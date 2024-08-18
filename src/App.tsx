@@ -6,8 +6,8 @@ import { BarGlob3d } from 'glob3d';
 import { useEffect, useReducer, useRef, useState } from 'react';
 
 import './App.css';
-import FloatMenu from './components/FloatMenu';
 import Globe from './components/Globe';
+import FloatMenu from './components/Menu/FloatMenu';
 import { addQueryLimit, endpoints } from './constants/endpoints';
 import { dataFiltersReducer, initialDataFilters } from './reducers/dataFilters';
 import { initialSettings, settingsReducer } from './reducers/settings';
