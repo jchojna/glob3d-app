@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { ConfigProvider } from 'antd';
 import Color from 'color';
-// @ts-expect-error ignore missing glob3d types
 import { BarGlob3d } from 'glob3d';
 import { useEffect, useReducer, useRef, useState } from 'react';
 
@@ -21,6 +20,7 @@ function App() {
   );
   const [settings, setSettings] = useReducer(settingsReducer, initialSettings);
   const isDataReady = useRef(false);
+  const backgroundColor = Color(settings.colorBackground).lighten(0.15).hex();
 
   const { dataset, queryLimit, selectedCountries } = dataFilters;
   const { data, isLoading, error } = useQuery({
@@ -48,13 +48,10 @@ function App() {
   }, [data]);
 
   useEffect(() => {
-    document.body.style.backgroundColor = Color(settings.colorBackground)
-      .lighten(0.15)
-      .hex();
+    document.body.style.backgroundColor = backgroundColor;
     if (globeInstance) {
-      globeInstance.setActiveColor(settings.colorPrimary);
+      globeInstance.setBarActiveColor(settings.colorPrimary);
       globeInstance.setGlobeColor(settings.colorBackground);
-      globeInstance.setGlobeOpacity(settings.globeOpacity);
       globeInstance.setAutoRotate(settings.autoRotate);
     }
   }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -71,7 +68,7 @@ function App() {
     const results = prepareCitiesData(data.results).filter((d) =>
       selectedCountries.length > 0 ? selectedCountries.includes(d.country) : d
     );
-    globeInstance.onUpdate(results);
+    globeInstance && globeInstance.onUpdate(results);
   }
 
   return (

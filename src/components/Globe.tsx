@@ -1,4 +1,3 @@
-// @ts-expect-error ignore missing glob3d types
 import { BarGlob3d } from 'glob3d';
 import { useEffect, useRef } from 'react';
 
@@ -9,20 +8,18 @@ type GlobeProps = {
 
 function Globe({
   setGlobeInstance,
-  settings: { colorPrimary, colorBackground, globeOpacity },
+  settings: { colorPrimary, colorBackground },
 }: GlobeProps) {
   const appRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (appRef.current && appRef.current.children.length === 0) {
       setGlobeInstance(
-        new BarGlob3d(appRef.current, null, {
+        new BarGlob3d(appRef.current, [], {
           tooltipValueSuffix: 'people',
           globeColor: colorBackground,
           barColor: '#b4afe8',
           barActiveColor: colorPrimary,
-          tooltipActiveBackgroundColor: colorPrimary,
-          globeOpacity: globeOpacity,
         })
       );
     }
