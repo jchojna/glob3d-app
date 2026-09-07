@@ -17,9 +17,12 @@ function Globe({
       setGlobeInstance(
         new BarGlob3d(appRef.current, [], {
           tooltipValueSuffix: 'people',
+          tooltipsLimit: 10,
           globeColor: colorBackground,
           barColor: '#b4afe8',
           barActiveColor: colorPrimary,
+          landCellPadding: 0.75,
+          highestBar: 0.2,
         })
       );
     }
