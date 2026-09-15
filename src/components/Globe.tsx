@@ -23,6 +23,7 @@ function Globe({
           barActiveColor: colorPrimary,
           landCellPadding: 0.75,
           highestBar: 0.2,
+          halo: true,
         })
       );
     }
